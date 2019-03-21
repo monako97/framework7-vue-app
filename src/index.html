@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>merry</title>
+  </head>
+  <body>
+    <div id="app">
+      <!-- 全屏模式的状态栏覆盖 (Cordova 或 PhoneGap) -->
+      <f7-statusbar></f7-statusbar>
+      <!-- 带有 "盖" 效果的左面板 -->
+      <f7-panel left cover>
+        <f7-view>
+          <f7-pages navbar-fixed>
+            <f7-page>
+              <f7-navbar title="Left Panel"></f7-navbar>
+              <f7-block>
+                <p>下面是左侧面板文本</p>
+              </f7-block>
+            </f7-page>
+          </f7-pages>
+        </f7-view>
+      </f7-panel>
+      <!-- 具有 "显示" 效果的右侧面板 -->
+      <f7-panel right reveal>
+        <f7-view>
+          <f7-pages navbar-fixed>
+            <f7-page>
+              <f7-navbar title="Right Panel"></f7-navbar>
+              <f7-block>
+                <p>这里是正确的面板文本</p>
+              </f7-block>
+            </f7-page>
+          </f7-pages>
+        </f7-view>
+      </f7-panel>
+      <!-- 视图 -->
+      <f7-views>
+        <!-- 主视图 -->
+        <f7-view main navbar-through toolbar-fixed>
+          <!-- 对于 iOS 主题, 我们使用导航直通布局, 因此导航栏应该是视图的子级 -->
+          <f7-navbar v-if="$theme.ios" title="Awesome App"></f7-navbar>
+          <f7-pages navbar-fixed toolbar-fixed>
+            <f7-page>
+              <!-- 对于 "material" 主题, 我们使用导航固定布局, 因此导航栏应该是页面的子级 -->
+              <f7-navbar v-if="$theme.material" title="Awesome App"></f7-navbar>
+              <!-- Page content -->
+              <f7-block>
+                <p>这里来了主视图页面文本</p>
+              </f7-block>
+              <!-- 点击打开侧面板 -->
+              <f7-grid>
+                <f7-col>
+                  <f7-button open-panel="left">左侧面板</f7-button>
+                </f7-col>
+                <f7-col>
+                  <f7-button open-panel="right">右侧面板</f7-button>
+                </f7-col>
+              </f7-grid>
+              <!-- 点击打开弹出窗口 -->
+              <f7-button open-popup="#my-popup">打开弹出窗口</f7-button>
+            </f7-page>
+          </f7-pages>
+        </f7-view>
+      </f7-views>
+      <!-- 弹出。所有的模式都应该在视图之外 -->
+      <f7-popup id="my-popup">
+        <f7-view>
+          <f7-pages navbar-fixed>
+            <f7-page>
+              <f7-navbar title="Popup">
+                <!-- 链接到关闭弹出窗口 -->
+                <f7-nav-right>
+                  <f7-link close-popup>Close</f7-link>
+                </f7-nav-right>
+              </f7-navbar>
+              <f7-block>
+                <p>这里来弹出的文本</p>
+              </f7-block>
+            </f7-page>
+          </f7-pages>
+        </f7-view>
+      </f7-popup>
+    </div>
+    <!-- ... scripts ... -->
+  </body>
+</html>
