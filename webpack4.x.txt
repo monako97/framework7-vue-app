@@ -1,0 +1,358 @@
+跑webpack
+    webpack src/a.js --output dist/bundle.js
+-------------------------------------------------------------------------------
+配置文件
+    执行命令 webpack
+    momo.config.js
+-------------------------------------------------------------------------------
+    配置文件名字可以修改
+        webpack --config momo.config.js
+-------------------------------------------------------------------------------
+    配置：
+        module.exports={
+            // 入口配置
+            entry:{
+                a: './src/a.js'
+            },
+            // 出口配置
+            output:{
+                path: __dirname + '/dist', // path 必须是绝对路径
+                filename: './bundle.js'
+            },
+            // loaders
+            modules:{},
+            // 插件
+            plugins:[],
+            // 开发服务器
+            devServer:{}
+        };
+-------------------------------------------------------------------------------
+    node模版 配置：
+        const path = require('path'); // node系统模块
+        module.exports={
+            // 入口配置
+            entry:{
+                a: './src/a.js'
+            },
+            // 出口配置
+            output:{
+                path: path.resolve(__dirname,'dist'), // path 必须是绝对路径
+                filename: './bundle.js'
+            },
+        };
+-------------------------------------------------------------------------------
+    npm scripts：
+        package.json:
+            "scripts": {
+                "config": "webpack --config momo.config.js",
+                "dev": "webpack --mode development",
+                "dir": "webpack --mode production"
+            }
+        执行：npm run config
+             npm run dev
+             npm run dir
+-------------------------------------------------------------------------------
+零配置
+-------------------------------------------------------------------------------
+mode：
+ 零配置模式命令
+    开发 webpack --mode development
+    生产 webpack --mode production
+-------------------------------------------------------------------------------
+多入口打包在一起
+    module.exports = {
+        entry:['./src/a.js','./src/index2.js'],
+    }
+    // 注意：按顺序一次打包
+-------------------------------------------------------------------------------
+多入口多出口
+    module.exports = {
+        entry:{
+            index: './src/a.js',
+            index2: './src/index2.js'
+        },
+        output:{
+            path: path.resolve(__dirname,'dist'),
+            filename: '[name]bundle.js'
+        },
+    }
+    // 注意：按顺序一次打包
+-------------------------------------------------------------------------------
+html-webpack-plugins
+    *注意：依赖webpack、webpack-cli
+    生成页面
+
+    1、安装：npm install html-webpack-plugin -D
+    2、引入：const HtmlWebpackPlugin = require('html-webpack-plugin');
+    3、使用：plugins:[
+                new HtmlWebpackPlugin()
+            ]
+-------------------------------------------------------------------------------
+html-webpack-plugins
+    模版：
+        new HtmlWebpackPlugin({
+            minify:{
+                collapseWhitespace: true   // 是否使用压缩
+                removeAttributeQuotes: true    // 删除属性的双引号
+            },
+            hash: true, // 清除缓存
+            chunks: ['index'], // 多页面分别引入各自的js 填入口的名字
+            filename: 'index2.html', //生成多个页面需要添加这个属性定义文件名
+            title: '这个是页面标题',
+            template: '模版路径'
+        })
+
+        注意：标题配置完了，要 记得在模版中使用
+        <title><%= htmlWebpackPlugin.options.title%></title>
+-------------------------------------------------------------------------------
+clean-webpack-plugins 删除某些东西
+    安装 npm install clean-webpack-plugin -D
+    引入模块
+        const CleanWebpackPlugin = require('clean-webpack-plugin');
+    使用
+        new CleanWebpackPlugin(['dist'])
+-------------------------------------------------------------------------------
+devSever
+    安装：
+        npm install webpack-dev-server -D
+    使用：
+        const webpack = require('webpack');// 热更新2
+            devServer: {
+                // 设置服务器访问的基本目录
+                contentBase: path.resolve(__dirname, 'src'),
+                // 服务器ip地址，localhost
+                host: 'localhost',
+                // 设置端口号
+                port: 8090,
+                // 自动打开浏览器
+                open: true,
+                // 热更新1
+                hot: true
+            },
+                new webpack.HotModuleReplacementPlugin() // 热更新3
+    此时 pakcage.json:
+            'script'：{
+                "dev": "webpack-dev-server --open --mode development", // 自动打开浏览器：--open 设置一处就行
+            }
+
+            运行 npm run dev
+
+-------------------------------------------------------------------------------
+loaders: 在webpack里是一个很重要的功能
+            加载器、转化器
+                比如：less/scss 转 css
+                    ES7 8
+                    jsx
+-------------------------------------------------------------------------------
+处理css文件：
+    style-loader
+    css-loader
+        安装：npm i style-loader css-loader -D
+        配置：module:{
+                   rules:[
+                       {
+                           test: /\.css$/,
+                           // loader:['style-loader','css-loader'],
+                           use:['style-loader','css-loader']
+                       }
+                   ]
+               }
+              关于loader的写法： 1、loader:['style-loader','css-loader']
+                               2、use:['style-loader','css-loader']
+                               3、use:[
+                                    {loader:'style-loader'},
+                                    {loader:'css-loader'}
+                               ]
+-------------------------------------------------------------------------------
+处理图片：
+    url-loader
+    file-loader
+        安装：npm i file-loader url-loader -D
+        配置：{
+               test:/\.(png|jpg|gif)$/,
+               use:[{
+                   loader:'url-loader',
+                   options:{
+                       limit:5000,  // 文件大与该大小时以路径形式引入，否则转换为base64格式
+                       name: '[hash:8]-[name].[ext]' // 原先叫什么文件名，输出后还是叫什么文件名，避免文件名重复，在前面拼接8位hash值
+                   }
+               }],
+           }
+-------------------------------------------------------------------------------
+处理字体文件：
+                {
+                     test: /\.(ttf|eot|svg|woff|woff2)$/, // 处理字体文件
+                     use: 'url-loader'
+                 },
+-------------------------------------------------------------------------------
+分离css：
+    extract-text-webpack-plugin
+    安装：npm i extract-text-webpack-plugin -D
+            npm i extract-text-webpack-plugin@next -D
+    引入：const ExtractTextPlugin = require('extract-text-webpack-plugin')
+    使用：
+        1、在plugins里面使用：new ExtractTextPlugin('提取出去的路径')
+        2、在module的rules里面配置：
+            use: ExtractTextPlugin.extract({
+                fallback: 'style-loader',
+                use: 'css-loader',
+                publicPath: '../' // 解决css背景图，路径问题
+            })
+-------------------------------------------------------------------------------
+less：
+    安装：npm i less less-loader -D
+    引入：js文件中 import '../less/a.less';
+    配置：{
+        test: /\.less$/,
+        use: ['style-loader','css-loader','less-loader']
+    }
+
+    分离less：use: ExtractTextPlugin.extract({
+               fallback: 'style-loader',
+               use: ['css-loader','less-loader'],
+               publicPath: '../'
+           })
+-------------------------------------------------------------------------------
+sass：
+    安装：npm i node-sass sass-loader -D
+    引入：js文件中 import '../sass/a.scss';
+    配置：{
+        test: /\.(sass|scss)$/,
+        use: ['style-loader','css-loader','sass-loader']
+    }
+    分离sass：use: ExtractTextPlugin.extract({
+               fallback: 'style-loader',
+               use: ['css-loader','sass-loader'],
+               publicPath: '../'
+           })
+-------------------------------------------------------------------------------
+自动处理前缀transform：
+    -webkit-transform:
+    自动处理前缀：postCss  预处理器    专门处理css平台
+
+    1、安装：npm i postcss-loader autoprefixer -D
+    2、准备postcss.config.js配置文件
+        module.exports = {
+            plugins: [
+                require('autoprefixer') //引入
+            ]
+        }
+    3、配置：use: ExtractTextPlugin.extract({
+                     fallback: 'style-loader',
+                     use: ['css-loader','postcss-loader'],
+                     publicPath: '../'
+                 })
+-------------------------------------------------------------------------------
+消除冗余的css代码：
+    Purifycss
+    安装：npm i purifycss-webpack purify-css -D
+    引入：const PurifycssWebpack = require('purifycss-webpack');
+    需要引入一个额外的包；glob
+        安装：npm glob -D
+        引入：const glob = require('glob');
+    使用：new PurifyCssWebpack({
+           paths: glob.sync(path.join(__dirname,'src/html/*.html'))
+       })
+-------------------------------------------------------------------------------
+上线调试：
+    webpack 4.x开启调试
+            --mode development
+-------------------------------------------------------------------------------
+babel：
+    - babel用来编译js
+    - 让你轻松使用ESnext转化
+    - jsx
+    需要：babel-core babel-loader babel-preset-env
+    安装：npm i babel-loader@7 babel-core babel-preset-env babel-preset-stage-0 -D
+    rules配置：{
+           test: /\.(js|jsx)$/,
+           use: ['babel-loader'],
+           exclude: /node_modules/  // 排除文件夹
+       },
+    在项目根目录创建.babelrc配置文件: presets(语法)
+        {
+            "presets": ["env","stage-0"]
+        }
+-------------------------------------------------------------------------------
+jsx：
+    安装： npm i babel-preset-react -D
+          npm i react-dom -D
+-------------------------------------------------------------------------------
+在webpack中使用模块化：
+    和node一模一样
+        导出：module.exports = xxxx
+        引入：require('./xxxx') //文件路径
+-------------------------------------------------------------------------------
+在webpack中使用json：
+    require('./xxx.json')
+-------------------------------------------------------------------------------
+静态资源输出：
+    copy-webpack-plugin
+    安装：npm i copy-webpack-plugin -D
+    引入：const CopyWebpackPlugin = require('copy-webpack-plugin')
+    使用：在plugins里面调用
+            new CopyWebpackPlugin([{
+                from:path.resolve(__dirname,'./src/assets'), // 资源路径
+                to:'./public' // 输出路径
+            }])
+-------------------------------------------------------------------------------
+使用第三方库：
+    方式1：、直接npm下载，然后引入
+        如jq：安装：npm i jquery -S
+             引入：import $ from 'jquery';
+    方式2：、ProvidePlugin
+                const webpack = require('webpack')
+            使用：在plugins中配置：
+                    new webpack.ProvidePlugin({
+                        $:'jquery', // 名字：模块名
+                        .. : ...
+                    })
+    通过ProvidePlugin和import直接引入区别：
+        1、import $....引入后，无论你在代码中是否使用jquery，打包后，都会打进去，这样会产生大量的冗余js
+        2、ProvidePlugin，只有你在使用到此库的时候才会打包
+-------------------------------------------------------------------------------
+提取第三方或者想提取的js库：
+    之前webpack3.x：
+        在plugins中配置：
+            new webpack.optimize.CommonsChunkPlugin({
+                name:'jquery'
+            })
+    到了webpack4.x版本：
+        optimization:{
+            splitChunks:{
+                cacheGroups: {
+                    aaa:{
+                        chunks:'initial',
+                        name:'jquery',
+                        enforce:true
+                    },
+                    bbb:{
+                        chunks:'initial',
+                        name:'入口文件名称',
+                        enforce:true //是否强制执行
+                    },
+                }
+            }
+        }
+-------------------------------------------------------------------------------
+Mint-UI组件按需引入：
+    安装 npm install babel-plugin-component -D
+    .babelrc 修改为：
+        {
+          "presets": [
+            ["es2015", { "modules": false }]
+          ],
+          "plugins": [["component", [
+            {
+              "libraryName": "mint-ui",
+              "style": true
+            }
+          ]]]
+        }
+-------------------------------------------------------------------------------
+移除 webpack 打包时的严格模式：
+    安装： npm i babel-plugin-transform-remove-strict-mode -D
+    修改文件.babelrc ：
+        {
+            "plugins": ["transform-remove-strict-mode"]
+        }
