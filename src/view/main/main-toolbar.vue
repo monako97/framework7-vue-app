@@ -20,7 +20,7 @@
    </f7-toolbar>
    <f7-tabs>
       <f7-tab class="page-content" id="home" tab-active>
-        <f7-view url="/home" links-view=".view-main"></f7-view>
+        <f7-view url="/home" main></f7-view>
       </f7-tab>
       <f7-tab class="page-content" id="chat">
         <f7-view url="/chat"></f7-view>

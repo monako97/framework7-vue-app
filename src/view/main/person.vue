@@ -27,14 +27,6 @@
             url: 'http://placekitten.com/1024/1024',
             caption: 'I met this monkey in Chinese placekitten',
           },
-          {
-            url: 'https://raw.githubusercontent.com/merry1997/GraphicBed/master/20190324003055.jpg',
-            caption: 'I met this monkey in Chinese lock',
-          },
-          {
-            url: 'https://raw.githubusercontent.com/merry1997/GraphicBed/master/20190324003435.jpg',
-            caption: 'I met this monkey in Chinese mountains',
-          }
         ],
       };
     },

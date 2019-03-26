@@ -10,15 +10,14 @@ module.exports = {
     },
     devServer:{
         contentBase: path.resolve(__dirname, 'dist'),
-        openPage: 'html', //指定第一次打开的路径
+        openPage: 'html/index.html', //指定第一次打开的路径
         host:'localhost',
         port:8090,
         inline: true,//设置为true，当源文件改变时会自动刷新页面
-        
     },
     output:{
-        path:path.resolve(__dirname,'dist/js'),
-        filename:'Nyapass[name].js'
+        path:path.resolve(__dirname,'dist'),
+        filename:'js/[name]-[hash:8].js'
     },
     plugins:[
         new VueLoaderPlugin(),
@@ -26,14 +25,14 @@ module.exports = {
             title: 'Nyapass',
             minify:{ collapseWhitespace: true, removeAttributeQuotes: true },
             template: path.resolve(__dirname,'./src/html/index.html'),
-            filename: '../html/index.html',
+            filename: './html/index.html',
             hash: true,
             chunksSortMode: 'none'
         }),
-        new ExtractTextPlugin('../css/index.css'),//分离css 
+        new ExtractTextPlugin('./css/index.css'),//分离css 
         new CopyWebpackPlugin([{ //静态资源输出
             from:path.resolve(__dirname,'./src/assets'), // 资源路径
-            to:'../assets' // 输出路径
+            to:'./assets' // 输出路径
         }]),
     ],
     resolve: {
