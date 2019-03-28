@@ -11,7 +11,6 @@ Framework7.use(Framework7Vue);
 import "framework7/css/framework7.bundle.min.css";
 // 安装字体图标
 import "framework7-icons";
-
 // 初始化 app 组件
 export default new Vue({
   el: '#app',

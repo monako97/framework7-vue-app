@@ -67,7 +67,7 @@ module.exports = {
                 use: [{
                     loader: 'url-loader',
                     options: {
-                        limit: 5000, // 文件大与该大小时以路径形式引入，否则转换为base64格式
+                        limit: 200000, // 文件大与该大小时以路径形式引入，否则转换为base64格式 200k
                         name: '[hash:8]-[name].[ext]' // 原先叫什么文件名，输出后还是叫什么文件名，避免文件名重复，在前面拼接8位hash值
                     }
                 }]

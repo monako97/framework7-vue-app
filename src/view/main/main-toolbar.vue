@@ -53,11 +53,11 @@
       let self = this;
       // Framework7完全初始化时将执行的回调函数
       this.$f7ready((f7) => {
-        self.$$('.morph').touchstart(function(){
+        self.$$('.morph').touchstart(()=>{
           self.$$('.tabs').eq(0).addClass('blur');
           self.$$('.toolbar').eq(0).addClass('blur');
         });
-        self.$$('.fab-close').touchstart(function(){
+        self.$$('.fab-close').touchstart(()=>{
           self.$$('.tabs').eq(0).removeClass('blur');
           self.$$('.toolbar').eq(0).removeClass('blur');
         });
